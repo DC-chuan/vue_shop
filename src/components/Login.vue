@@ -36,14 +36,13 @@
 
 <script>
 import {login} from '../api/http'
-import md5 from 'md5'
 export default {
     name:'Login',
     data(){
         return{
             loginForm:{
                 username:'admin',
-                password:'12345678'
+                password:'123456'
             },
             LoginFormRules:{
                 username: [
@@ -52,44 +51,45 @@ export default {
                 ],
                 password:[
                     { required: true, message: '请输入密码', trigger: 'blur' },
-                    { min: 6, max: 11, message: '长度在 6 到 11 个字符', trigger: 'blur' }
+                    { min: 5, max: 11, message: '长度在 5 到 10 个字符', trigger: 'blur' }
                 ]
             }
         }
     },
     methods:{
         loginReset(){
-            this.$refs.loginFormRef.resetFields()
+            this.$refs.loginFormRef.resetField()
         },
         Login(){
             // 封装登录post数据
             const FormData = {
                 username:this.loginForm.username,
-                password:md5(md5(this.loginForm.password))
+                password:this.loginForm.password
             };
             // 登录表单校验
             this.$refs.loginFormRef.validate(async valid=>{
                 if(!valid) return;
                 // 发起登录Ajax请求
                 await login(FormData)
-                .then(res=>{
-                    const msg = res.data.msg
+                .then(result=>{
+                    let data = result.data.data
+                    let meta = result.data.meta
+                    console.log(data,meta);
                     // 如果登陆失败
-                   if(res.data.code !== 200) {
-                       this.$message.error(msg);
+                   if(meta.status !== 200) {
+                      return this.$message.error(meta.msg);
                     } 
-                    // 登录错误信息弹框提示
-                    console.log(111);
-                    this.$message.success(msg);
+                    // 登录成功信息弹框提示
+                    this.$message.success(meta.msg);
 
                     // 保存服务端响应的 token
-                    window.localStorage.setItem('token',res.data.token);
+                    window.localStorage.setItem('token',data.token);
                     // 跳转到home页面
                     this.$router.push('/home')
                 })
                 .catch(err=>console.log(err))
             })
-        }
+        },
     },
 }
 </script>
@@ -136,5 +136,9 @@ export default {
     .login_button{
         display: flex;
         justify-content: flex-end;
+    }
+    .login_button span{
+        position: relative;
+        right: 108px;
     }
 </style>

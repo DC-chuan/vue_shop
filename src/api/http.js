@@ -2,18 +2,14 @@ import axios from "axios";
 
 import qs from 'qs'
 
-const http = axios.create({
-    baseURL: 'http://139.196.94.15:8085',
-    timeout: 5000,
-});
-// 暴露 http 默认配置
-export default http
+axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/'
+axios.defaults.timeout = 5000
 
 // 封装login
 export const login = ((data) => {
     return axios({
         method: 'post',
-        url: 'http://localhost:3000/login',
+        url: 'login',
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         data: qs.stringify(data)
     })

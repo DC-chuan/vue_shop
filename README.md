@@ -1,5 +1,5 @@
 ### 基于vue和element-ui 构建的电商后台管理项目
-    后端接口 http://139.196.94.15:8085/swagger-ui.html#/%E7%94%A8%E6%88%B7%E6%8E%A5%E5%8F%A3
+    后端接口 
 
     使用组件库：el-form  el-form-item  el-input el-button 字体图标
 

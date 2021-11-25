@@ -5,12 +5,13 @@ import VueRouter from 'vue-router'
 import Login from '../components/Login'
 import Home from '../components/Home'
 
+
 Vue.use(VueRouter)
 
 const routes = [
     { path: '/', component: Login },
-    { path: '/login', component: Login },
-    { path: '/home', component: Home }
+    { name: 'login', path: '/login', component: Login },
+    { path: '/home', component: Home },
 ]
 
 const router = new VueRouter({
@@ -22,6 +23,7 @@ router.beforeEach((to, from, next) => {
     // from 从哪个组件发生跳转
     // next 一个函数 放行
     // next()放行  next('/login')强制跳转到login
+    // console.log(to);
     if (to.path === '/login') return next()
         // 获取token
     const tokenStr = window.localStorage.getItem('token')
