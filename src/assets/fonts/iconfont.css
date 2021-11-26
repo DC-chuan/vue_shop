@@ -1,6 +1,6 @@
 @font-face {
   font-family: "iconfont"; /* Project id  */
-  src: url('iconfont.ttf?t=1637674570530') format('truetype');
+  src: url('iconfont.ttf?t=1637825128312') format('truetype');
 }
 
 .iconfont {
@@ -11,11 +11,39 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-users:before {
+  content: "\e830";
+}
+
+.icon-lifangtilitiduomiantifangkuai2:before {
+  content: "\e7fb";
+}
+
+.icon-shop:before {
+  content: "\e611";
+}
+
 .icon-user:before {
   content: "\e605";
 }
 
+.icon-danju:before {
+  content: "\e89b";
+}
+
+.icon-chakanmima:before {
+  content: "\e68f";
+}
+
 .icon-password:before {
   content: "\e625";
+}
+
+.icon-baobiao:before {
+  content: "\e62d";
+}
+
+.icon-morentouxiangbeifen:before {
+  content: "\e628";
 }
 

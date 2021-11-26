@@ -10,40 +10,46 @@
         </el-header>
         <el-container> 
             <!-- aside -->
-            <el-aside width="200px">
-                <el-col>
+            <el-aside :width="isCollapse ?  '64px' : '200px' " >
                     <!-- 侧边栏菜单区 -->
-                    <el-menu
+                    <div class="controlCol" @click="controlCol">
+                        <i :class=" collapseFont"></i></div>
+                    <transition name="el-fade-in-linear">
+                        <el-menu
+                        :default-active='DefAct'
+                        :router='true'
+                        :collapse='isCollapse'
                         background-color="#333744"
                         text-color="#fff"
-                        active-text-color="#ffd04b">
+                        active-text-color="#409fff"
+                        unique-opened>
                         <!-- 一级菜单 -->
-                        <el-submenu index="1">
+                            <el-submenu 
+                            :index="m1.id+''" 
+                            v-for="(m1,index) in MenusData" 
+                            :key="m1.id">
                             <!-- 一级菜单模板区 -->
-                            <template slot="title">
-                                <i class="el-icon-location"></i>
-                                <span>导航一</span>
-                            </template>
-
+                                <template slot="title">
+                                    <i :class="fontlist[index]"></i>
+                                    <span>{{m1.authName}}</span>
+                                </template>
                             <!-- 二级菜单 -->
-                                <el-menu-item index="1-1">
+                                <el-menu-item :index=" '/'+m2.path " 
+                                v-for="m2 in m1.children" :key="m2.id"
+                                @click="SessionAct('/'+m2.path)">
                                     <template slot="title">
-                                        <i class="el-icon-location"></i>
-                                        <span>导航一</span>
+                                        <i class="el-icon-s-grid"></i>
+                                        <span>{{m2.authName}}</span>
                                     </template>
                                 </el-menu-item>
-                                <el-menu-item index="1-2">
-                                    <template slot="title">
-                                        <i class="el-icon-location"></i>
-                                        <span>导航一</span>
-                                    </template>
-                                </el-menu-item>
-                        </el-submenu>
-                    </el-menu>
-                </el-col>
+                            </el-submenu>
+                        </el-menu>
+                    </transition>
             </el-aside>
             <!-- main  -->
-            <el-main>Main</el-main>
+            <el-main>
+                <router-view></router-view>
+            </el-main>
         </el-container>
     </el-container>
 </template>
@@ -51,12 +57,64 @@
 <script>
 export default {
     name:'Home',
+    created(){
+        this.getMenus()
+        this.DefAct = sessionStorage.getItem('DefAct')
+    },
+    data(){
+        return{
+            MenusData:[],
+            fontlist:[
+                'iconfont icon-users',
+                'iconfont icon-lifangtilitiduomiantifangkuai2',
+                'iconfont icon-shop',
+                'iconfont icon-danju',
+                'iconfont icon-baobiao'
+            ],
+            // 是否折叠
+            isCollapse:false,
+            // 保存index高亮状态
+            DefAct: ''
+        }
+    },
+
     methods:{
         LogOut(){
             window.localStorage.removeItem('token')
             this.$router.replace('/login')
-        }
-    }
+        },
+  async getMenus(){
+            // es6对象结构赋值
+        const {data:res} = await this.$http.get('menus')
+            // 把获取到的表单数据给 VC
+            if(res.meta.status !== 200) return this.$message.error(res.meta.msg)
+            this.MenusData = res.data
+        },
+        // 控制折叠
+        controlCol(){
+         this.isCollapse = !this.isCollapse
+        },
+        SessionAct(data){
+            sessionStorage.setItem('DefAct',data)
+        },
+        // 控制子组件被销毁后子组件的active样式
+        changeAct(){
+            console.log('home组件接受到了');
+            this.DefAct = ''
+        },
+    },
+    computed:{
+        collapseFont(){
+            if(this.isCollapse) return 'el-icon-s-unfold'
+            return 'el-icon-s-fold'
+        },
+    },
+    mounted() {
+        this.$bus.$on('changeAct',this.changeAct)
+    },
+    beforeDestroy() {
+        sessionStorage.removeItem('DefAct')
+    },
 }
 </script>
 
@@ -89,5 +147,23 @@ export default {
     }
     .el-main{
         background-color: #eaedf1;
+    }
+    .el-menu{
+        border-right: 0;
+    }
+    .el-submenu{
+        margin: 0 0 15px 0;
+        box-shadow: 0 0 1px;
+        letter-spacing: 2px;
+    }
+    .el-submenu i {
+        margin-right: 10px;
+    }
+    .controlCol{
+        width: 100%;
+        background-color: #414758;
+        text-align: center;
+        cursor: pointer;
+        font-size: 20px;
     }
 </style>

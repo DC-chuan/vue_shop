@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import {login} from '../api/http'
+import {login} from '../api/user'
 export default {
     name:'Login',
     data(){
@@ -74,7 +74,6 @@ export default {
                 .then(result=>{
                     let data = result.data.data
                     let meta = result.data.meta
-                    console.log(data,meta);
                     // 如果登陆失败
                    if(meta.status !== 200) {
                       return this.$message.error(meta.msg);
